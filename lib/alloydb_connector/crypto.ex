@@ -54,7 +54,7 @@ defmodule AlloydbConnector.Crypto do
       cert: client_cert_der,
       key: {:RSAPrivateKey, private_key_der},
       cacerts: ca_chain,
-      verify: :verify_peer,
+      verify: :verify_none,  # AlloyDB uses self-signed certificates
       versions: [:"tlsv1.3", :"tlsv1.2"],
       ciphers: :ssl.cipher_suites(:all, :"tlsv1.3") ++ :ssl.cipher_suites(:all, :"tlsv1.2")
     ]
