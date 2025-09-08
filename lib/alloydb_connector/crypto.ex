@@ -29,10 +29,23 @@ defmodule AlloydbConnector.Crypto do
   @doc """
   Create SSL options with client certificate for mTLS.
   """
-  def ssl_options(client_cert_pem, private_key, ca_cert_pem) do
-    # Parse certificates
+  def ssl_options(client_cert_pem, private_key, ca_cert_pem, cert_chain \\ []) do
+    # Parse client certificate
     [{:Certificate, client_cert_der, _}] = :public_key.pem_decode(client_cert_pem)
+    
+    # Parse CA certificate
     [{:Certificate, ca_cert_der, _}] = :public_key.pem_decode(ca_cert_pem)
+    
+    # Parse intermediate certificates from chain
+    intermediate_certs = Enum.flat_map(cert_chain, fn cert_pem ->
+      case :public_key.pem_decode(cert_pem) do
+        [{:Certificate, cert_der, _}] -> [cert_der]
+        _ -> []
+      end
+    end)
+    
+    # Build full CA chain (intermediates + root CA)
+    ca_chain = intermediate_certs ++ [ca_cert_der]
     
     # Convert private key to DER format for SSL
     private_key_der = :public_key.der_encode(:RSAPrivateKey, private_key)
@@ -40,7 +53,7 @@ defmodule AlloydbConnector.Crypto do
     [
       cert: client_cert_der,
       key: {:RSAPrivateKey, private_key_der},
-      cacerts: [ca_cert_der],
+      cacerts: ca_chain,
       verify: :verify_peer,
       versions: [:"tlsv1.3", :"tlsv1.2"],
       ciphers: :ssl.cipher_suites(:all, :"tlsv1.3") ++ :ssl.cipher_suites(:all, :"tlsv1.2")

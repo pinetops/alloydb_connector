@@ -126,10 +126,14 @@ defmodule AlloydbConnector.Connector do
         # First certificate in chain is the client cert
         client_cert = List.first(cert_chain)
         
+        # Rest of the chain are intermediate certificates
+        intermediate_certs = Enum.drop(cert_chain, 1)
+        
         {:ok, %{
           private_key: private_key,
           client_cert: client_cert,
-          ca_cert: ca_cert
+          ca_cert: ca_cert,
+          cert_chain: intermediate_certs
         }}
       
       {:error, reason} ->
@@ -158,11 +162,12 @@ defmodule AlloydbConnector.Connector do
   defp wrap_with_mtls(socket, certs, hostname) do
     Logger.debug("Establishing mTLS connection with ephemeral certificate")
     
-    # Build SSL options with client certificate for mTLS
+    # Build SSL options with client certificate for mTLS, including cert chain
     ssl_opts = Crypto.ssl_options(
       certs.client_cert,
       certs.private_key,
-      certs.ca_cert
+      certs.ca_cert,
+      Map.get(certs, :cert_chain, [])
     )
     
     # Add hostname for SNI
