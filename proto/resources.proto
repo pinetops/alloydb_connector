@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package google.cloud.alloydb.connectors.v1;
+
+// MetadataExchangeRequest is the request message for metadata exchange
+message MetadataExchangeRequest {
+  // AuthType specifies the authentication type
+  enum AuthType {
+    AUTH_TYPE_UNSPECIFIED = 0;
+    DB_NATIVE = 1;
+    AUTO_IAM = 2;
+  }
+
+  // User agent string
+  string user_agent = 1;
+  
+  // Authentication type
+  AuthType auth_type = 2;
+  
+  // OAuth2 token for IAM authentication
+  string oauth2_token = 3;
+}
+
+// MetadataExchangeResponse is the response message for metadata exchange
+message MetadataExchangeResponse {
+  // ResponseCode indicates success or failure
+  enum ResponseCode {
+    RESPONSE_CODE_UNSPECIFIED = 0;
+    OK = 1;
+    ERROR = 2;
+  }
+
+  // Response code
+  ResponseCode response_code = 1;
+  
+  // Error message if response_code is ERROR
+  string error = 2;
+}
