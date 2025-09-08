@@ -36,7 +36,7 @@ defmodule AlloydbConnector.Crypto do
     
     [
       cert: client_cert_der,
-      key: {:RSAPrivateKey, private_key},
+      key: private_key,  # private_key is already in the correct format from generate_key
       cacerts: [ca_cert_der],
       verify: :verify_peer,
       versions: [:"tlsv1.3", :"tlsv1.2"],
