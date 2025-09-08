@@ -34,9 +34,12 @@ defmodule AlloydbConnector.Crypto do
     [{:Certificate, client_cert_der, _}] = :public_key.pem_decode(client_cert_pem)
     [{:Certificate, ca_cert_der, _}] = :public_key.pem_decode(ca_cert_pem)
     
+    # Convert private key to DER format for SSL
+    private_key_der = :public_key.der_encode(:RSAPrivateKey, private_key)
+    
     [
       cert: client_cert_der,
-      key: private_key,  # private_key is already in the correct format from generate_key
+      key: {:RSAPrivateKey, private_key_der},
       cacerts: [ca_cert_der],
       verify: :verify_peer,
       versions: [:"tlsv1.3", :"tlsv1.2"],
