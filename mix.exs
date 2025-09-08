@@ -24,8 +24,8 @@ defmodule AlloydbConnector.MixProject do
     [
       {:protobuf, "~> 0.12.0"},
       {:google_protos, "~> 0.3.0"},
-      {:postgrex, github: "pinetops/postgrex", branch: "iam-support"},
-      {:goth, github: "pinetops/goth", branch: "alloydb-support"},
+      {:postgrex, github: "pinetops/postgrex", branch: "main"},
+      {:goth, "~> 1.3"},
       {:jason, "~> 1.4"},
       {:httpoison, "~> 2.0"},
       {:hackney, "~> 1.18"}

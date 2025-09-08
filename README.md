@@ -42,9 +42,9 @@ Add to your `mix.exs`:
 ```elixir
 def deps do
   [
-    {:alloydb_connector, github: "your-org/alloydb_connector"},
-    {:goth, github: "pinetops/goth", branch: "alloydb-support"},
-    {:postgrex, github: "pinetops/postgrex", branch: "iam-support"}
+    {:alloydb_connector, github: "pinetops/alloydb_connector"},
+    {:postgrex, github: "pinetops/postgrex"},
+    {:goth, "~> 1.3"}
   ]
 end
 ```
